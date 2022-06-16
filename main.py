@@ -55,9 +55,9 @@ def return_player():
 
 def button_press(event=None):
     global current_state
-    clip_selector = {0: {'path': r"clip1.mp4", 'length': 30000},
-                     1: {'path': r"clip2.mp4", 'length': 30000},
-                     2: {'path': r"clip3.mp4", 'length': 30000}}
+    clip_selector = {0: {'path': r"clip1.mp4", 'length': 12000},
+                     1: {'path': r"clip2.mp4", 'length': 14000},
+                     2: {'path': r"clip3.mp4", 'length': 17000}}
     stator = current_state % len(clip_selector)
 
     hide_button()
