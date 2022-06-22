@@ -1,20 +1,21 @@
 import tkinter
 import vlc
 import platform
+from PIL import ImageTk, Image
 
 current_state = 0
 
 
 class Screen(tkinter.Frame):
-    '''
-    Screen widget: Embedded video player from local or youtube
-    '''
+    """
+    Screen widget: Embedded video player from local or Youtube
+    """
 
     def __init__(self, parent, *args, **kwargs):
         tkinter.Frame.__init__(self, parent, bg='black')
         self.parent = parent
-        # Creating VLC player
-        self.instance = vlc.Instance()
+        # Creating VLC player --high-priority
+        self.instance = vlc.Instance("--verbose=0 --no-xlib --vout mmal_vout --mouse-hide-timeout=0 --no-mouse-events")
         self.player = self.instance.media_player_new()
 
     def GetHandle(self):
@@ -80,13 +81,21 @@ r.resizable(False, False)
 r.attributes("-fullscreen", True)
 r.config(cursor="none")
 
+
+
+# file_name = tkinter.PhotoImage(file=r"C:\Users\wangh\PycharmProjects\tkinter_videoplayer\background.png")
+file_name = ImageTk.PhotoImage(Image.open("background.png"))
+background_label = tkinter.Label(r, image=file_name)
+background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+player = Screen(r)
+
 photo = tkinter.PhotoImage(file=r"C:\Users\wangh\PycharmProjects\tkinter_videoplayer\check.png")
 button = tkinter.Label(r, image=photo)
 button.bind('<Button-1>', button_press)
 
 r.bind('<Escape>', close)
 
-player = Screen(r)
 return_button()
 
 r.mainloop()
