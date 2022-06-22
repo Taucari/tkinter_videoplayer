@@ -17,7 +17,8 @@ class Screen(tkinter.Frame):
         tkinter.Frame.__init__(self, parent, bg='black')
         self.parent = parent
         # Creating VLC player --high-priority
-        self.instance = vlc.Instance("--verbose=0 --no-xlib --vout mmal_vout --mouse-hide-timeout=0 --no-mouse-events")
+        # self.instance = vlc.Instance("--verbose=0 --no-xlib --vout mmal_vout --mouse-hide-timeout=0 --no-mouse-events")
+        self.instance = vlc.Instance("--verbose=0 --mouse-hide-timeout=0 --no-mouse-events")
         self.player = self.instance.media_player_new()
 
     # You shouldn't need this stuff
