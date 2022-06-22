@@ -41,6 +41,9 @@ class Screen(tkinter.Frame):
 
         self.player.play()
 
+    def pause_now(self):
+        self.player.set_pause(1)
+
 
 def hide_button():
     # Function to be called when hiding the button as the player appears
@@ -54,6 +57,7 @@ def return_button():
 
 def hide_player():
     # Function to hide the player
+    player.pause_now()
     player.place_forget()
 
 
