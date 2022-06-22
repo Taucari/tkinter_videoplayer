@@ -6,6 +6,7 @@ from PIL import ImageTk, Image
 # This global current_state variable determines which video and how long to wait for each video
 current_state = 0
 
+
 # Just a class to make it easier to define the vlc player in a tkinter Frame easier
 class Screen(tkinter.Frame):
     """
@@ -19,10 +20,10 @@ class Screen(tkinter.Frame):
         self.instance = vlc.Instance("--verbose=0 --no-xlib --vout mmal_vout --mouse-hide-timeout=0 --no-mouse-events")
         self.player = self.instance.media_player_new()
 
-# You shouldn't need this stuff
-#    def GetHandle(self):
-#        # Getting frame ID
-#        return self.winfo_id()
+    # You shouldn't need this stuff
+    #    def GetHandle(self):
+    #        # Getting frame ID
+    #        return self.winfo_id()
 
     def play(self, _source):
         # Function to start player from given source
@@ -57,7 +58,8 @@ def hide_player():
 
 
 def return_player():
-    # Function to un-hide the player, probably change width and height for different clips (can insert stator and the clip selector dict for control)
+    # Function to un-hide the player, probably change width and height for different clips (can insert stator and the
+    # clip selector dict for control)
     player.place(x=0, y=0, width=1920, height=1080)
 
 
@@ -93,19 +95,18 @@ def close(event=None):
 
 
 # Start of the actual configuration of tkinter gui
-r = tkinter.Tk() #root definition
+r = tkinter.Tk()  # root definition
 r.configure(background='black')
 r.resizable(False, False)
 r.attributes("-fullscreen", True)
 r.config(cursor="none")
-
-
 
 # file_name = tkinter.PhotoImage(file=r"C:\Users\wangh\PycharmProjects\tkinter_videoplayer\background.png")
 file_name = ImageTk.PhotoImage(Image.open("background.png"))
 background_label = tkinter.Label(r, image=file_name)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
+# Initial creation of a screen object
 player = Screen(r)
 
 # Loading the image to be used as a button
@@ -117,8 +118,6 @@ button.bind('<Button-1>', button_press)
 # Binding the escape key to close the program whenever
 r.bind('<Escape>', close)
 
-# Initial creation of a screen object
-player = Screen(r)
 # Button Init
 return_button()
 
