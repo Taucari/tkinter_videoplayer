@@ -37,30 +37,31 @@ input_output = {13: [2],  # Sensor/Screen 1
 #                 21: [2]  # Sensor/Screen 6
 #                 }
 
-path = ".\\music\\"
-sound_files = {1: ["Coke1 AudioClip1 Vocal.ogg",
-                   "Coke2 AudioClip1 Vocal.ogg",
-                   "Coke AudioClip1 Vocal.ogg"],
-               2: ["Coke1 AudioClip2 Brass.ogg",
-                   "Coke2 AudioClip2 Brass.ogg",
-                   "Coke AudioClip2 Flute.ogg"],
-               3: ["Coke1 AudioClip3 Perc.ogg",
-                   "Coke2 AudioClip3 Perc.ogg",
-                   "Coke AudioClip3 Perc.ogg"],
-               4: ["Coke1 AudioClip4 Airhorn.ogg",
-                   "Coke2 AudioClip4 Siren.ogg",
-                   "Coke AudioClip4 Siren.ogg"],
-               5: ["Coke1 AudioClip5 LowRumble.ogg",
-                   "Coke2 AudioClip5 LowRumble.ogg",
-                   "Coke AudioClip5 LowRumble.ogg"],
-               6: ["Coke1 AudioClip6 Scratch.ogg",
-                   "Coke2 AudioClip6 Scratch.ogg",
-                   "Coke AudioClip6 Scratch.ogg"]
+path = "/home/pi/music/"
+sound_files = {1: [{"name": "Coke1 AudioClip1 Vocal.ogg", "volume": 0.25},
+                   {"name": "Coke2 AudioClip1 Vocal.ogg", "volume": 0.25},
+                   {"name": "Coke3 AudioClip1 Vocal.ogg", "volume": 0.25}],
+               2: [{"name": "Coke1 AudioClip2 Brass.ogg", "volume": 0.25},
+                   {"name": "Coke2 AudioClip2 Brass.ogg", "volume": 0.25},
+                   {"name": "Coke3 AudioClip2 Flute.ogg", "volume": 0.25}],
+               3: [{"name": "Coke1 AudioClip3 Perc.ogg", "volume": 0.25},
+                   {"name": "Coke2 AudioClip3 Perc.ogg", "volume": 0.25},
+                   {"name": "Coke3 AudioClip3 Perc.ogg", "volume": 0.25}],
+               4: [{"name": "Coke1 AudioClip4 Airhorn.ogg", "volume": 0.25},
+                   {"name": "Coke2 AudioClip4 Siren.ogg", "volume": 0.25},
+                   {"name": "Coke3 AudioClip4 Siren.ogg", "volume": 0.25}],
+               5: [{"name": "Coke1 AudioClip5 LowRumble.ogg", "volume": 0.25},
+                   {"name": "Coke2 AudioClip5 LowRumble.ogg", "volume": 0.25},
+                   {"name": "Coke3 AudioClip5 LowRumble.ogg", "volume": 0.25}],
+               6: [{"name": "Coke1 AudioClip6 Scratch.ogg", "volume": 0.25},
+                   {"name": "Coke2 AudioClip6 Scratch.ogg", "volume": 0.25},
+                   {"name": "Coke3 AudioClip6 Scrape.ogg", "volume": 0.25}]
                }
 
 output_pins = [outcomes[i]["pin"] for i in outcomes.keys() if outcomes[i]["type"] == "GPIO"]
 
 RPi.GPIO.setmode(RPi.GPIO.BCM)
+RPi.GPIO.setup(25, RPi.GPIO.OUT)
 
 for i_pin in input_pins.keys():
     RPi.GPIO.setup(i_pin, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)
@@ -71,8 +72,9 @@ for o_pin in output_pins:
 # define own event type
 NEXT = pygame.USEREVENT + 1
 
-header = ".\\music\\"
+header = "/home/pi/music/"
 footer = ['Coke1 Main.ogg', 'Coke2 Main.ogg', 'Coke3 Main.ogg']
+main_track_volume = [0.25, 0.25, 0.25]
 playlist = [header + foot for foot in footer]
 # playlist = ['Coke1_Main.ogg', 'Coke2_Main.ogg', 'Coke3_Main.wav']
 
@@ -86,6 +88,10 @@ pygame.mixer.init(48000, -16, 2, 1024)
 # start first track
 pygame.mixer.music.load(playlist[current_track])
 pygame.mixer.music.play()
+pygame.mixer.music.set_volume(main_track_volume[current_track])
+
+# Set static light mode
+RPi.GPIO.output(25, 1)
 
 # send event NEXT every time tracks ends
 pygame.mixer.music.set_endevent(NEXT)
@@ -123,8 +129,10 @@ while running:
                     print("Output Pin " + str(outcomes[event]["pin"]) + " high.")
                 elif outcomes[event]["type"] == "sound":
                     channel_number = outcomes[event]["channel"]
-                    sound_effect = pygame.mixer.Sound(path + sound_files[channel_number][current_track])
+                    print("Triggering: " + str(sound_files[channel_number][current_track]["name"]))
+                    sound_effect = pygame.mixer.Sound(path + sound_files[channel_number][current_track]["name"])
                     pygame.mixer.Channel(channel_number).play(sound_effect)
+                    pygame.mixer.Channel(channel_number).set_volume(sound_files[channel_number][current_track]["volume"])
                     print("Channel " + str(outcomes[event]["channel"]) + " high.")
 
         elif not current_state and previous_state:
